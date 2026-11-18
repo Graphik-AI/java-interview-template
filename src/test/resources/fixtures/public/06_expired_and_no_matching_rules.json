@@ -1,0 +1,110 @@
+{
+  "description": "One rule is already over, one has not started, and one is live but matches no line. The cart price does not change. An empty promotions list is a separate valid request and returns an empty audit trail.",
+  "request": {
+    "cart": {
+      "cartId": "cart-window",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-06-15T12:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-BOOK",
+          "category": "BOOKS",
+          "unitPrice": 400.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_EXPIRED",
+        "name": "Expired books 50% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-06-01T00:00:00Z",
+        "conditions": {
+          "category": "BOOKS"
+        },
+        "discountConfig": {
+          "percentage": 50
+        }
+      },
+      {
+        "id": "PROMO_FUTURE",
+        "name": "Future books 50% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-07-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "category": "BOOKS"
+        },
+        "discountConfig": {
+          "percentage": 50
+        }
+      },
+      {
+        "id": "PROMO_OTHER",
+        "name": "Electronics 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 3,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "category": "ELECTRONICS"
+        },
+        "discountConfig": {
+          "percentage": 10
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-window",
+    "currency": "INR",
+    "originalSubtotal": 400.0,
+    "totalDiscount": 0.0,
+    "finalTotal": 400.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-BOOK",
+        "category": "BOOKS",
+        "quantity": 1,
+        "unitPrice": 400.0,
+        "originalExtendedPrice": 400.0,
+        "discount": 0.0,
+        "finalExtendedPrice": 400.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_EXPIRED",
+        "ruleName": "Expired books 50% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "SKIPPED",
+        "discountAmount": 0.0,
+        "reason": "Skipped: evaluationTimestamp 2026-06-15T12:00:00Z outside validity window [2026-01-01T00:00:00Z, 2026-06-01T00:00:00Z]"
+      },
+      {
+        "ruleId": "PROMO_FUTURE",
+        "ruleName": "Future books 50% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "SKIPPED",
+        "discountAmount": 0.0,
+        "reason": "Skipped: evaluationTimestamp 2026-06-15T12:00:00Z outside validity window [2026-07-01T00:00:00Z, 2026-12-31T23:59:59Z]"
+      },
+      {
+        "ruleId": "PROMO_OTHER",
+        "ruleName": "Electronics 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "SKIPPED",
+        "discountAmount": 0.0,
+        "reason": "Skipped: no items in category ELECTRONICS"
+      }
+    ]
+  }
+}

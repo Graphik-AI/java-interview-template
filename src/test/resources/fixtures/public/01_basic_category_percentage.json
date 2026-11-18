@@ -1,0 +1,79 @@
+{
+  "description": "10% off FOOTWEAR only. ACCESSORIES stay at full price.",
+  "request": {
+    "cart": {
+      "cartId": "cart-category",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-SHOES",
+          "category": "FOOTWEAR",
+          "unitPrice": 2000.00,
+          "quantity": 1
+        },
+        {
+          "sku": "SKU-SOCKS",
+          "category": "ACCESSORIES",
+          "unitPrice": 500.00,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_FOOT",
+        "name": "Footwear 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "category": "FOOTWEAR"
+        },
+        "discountConfig": {
+          "percentage": 10
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-category",
+    "currency": "INR",
+    "originalSubtotal": 2500.00,
+    "totalDiscount": 200.00,
+    "finalTotal": 2300.00,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-SHOES",
+        "category": "FOOTWEAR",
+        "quantity": 1,
+        "unitPrice": 2000.00,
+        "originalExtendedPrice": 2000.00,
+        "discount": 200.00,
+        "finalExtendedPrice": 1800.00
+      },
+      {
+        "sku": "SKU-SOCKS",
+        "category": "ACCESSORIES",
+        "quantity": 1,
+        "unitPrice": 500.00,
+        "originalExtendedPrice": 500.00,
+        "discount": 0.00,
+        "finalExtendedPrice": 500.00
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_FOOT",
+        "ruleName": "Footwear 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "APPLIED",
+        "discountAmount": 200.00,
+        "reason": "Applied: 10% off category FOOTWEAR"
+      }
+    ]
+  }
+}

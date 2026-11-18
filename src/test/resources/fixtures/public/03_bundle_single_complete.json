@@ -1,0 +1,98 @@
+{
+  "description": "One complete laptop + mouse + bag bundle priced at 800.00. Component value is 1000.00, so the bundle saves 200.00.",
+  "request": {
+    "cart": {
+      "cartId": "cart-bundle",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-LAPTOP",
+          "category": "LAPTOP",
+          "unitPrice": 800.0,
+          "quantity": 1
+        },
+        {
+          "sku": "SKU-MOUSE",
+          "category": "ACCESSORIES",
+          "unitPrice": 150.0,
+          "quantity": 1
+        },
+        {
+          "sku": "SKU-BAG",
+          "category": "ACCESSORIES",
+          "unitPrice": 50.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_DESK",
+        "name": "Desk kit 800",
+        "type": "BUNDLE_FIXED_PRICE",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "components": [
+            { "sku": "SKU-LAPTOP", "quantity": 1 },
+            { "sku": "SKU-MOUSE", "quantity": 1 },
+            { "sku": "SKU-BAG", "quantity": 1 }
+          ]
+        },
+        "discountConfig": {
+          "bundlePrice": 800.0
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-bundle",
+    "currency": "INR",
+    "originalSubtotal": 1000.0,
+    "totalDiscount": 200.0,
+    "finalTotal": 800.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-LAPTOP",
+        "category": "LAPTOP",
+        "quantity": 1,
+        "unitPrice": 800.0,
+        "originalExtendedPrice": 800.0,
+        "discount": 160.0,
+        "finalExtendedPrice": 640.0
+      },
+      {
+        "sku": "SKU-MOUSE",
+        "category": "ACCESSORIES",
+        "quantity": 1,
+        "unitPrice": 150.0,
+        "originalExtendedPrice": 150.0,
+        "discount": 30.0,
+        "finalExtendedPrice": 120.0
+      },
+      {
+        "sku": "SKU-BAG",
+        "category": "ACCESSORIES",
+        "quantity": 1,
+        "unitPrice": 50.0,
+        "originalExtendedPrice": 50.0,
+        "discount": 10.0,
+        "finalExtendedPrice": 40.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_DESK",
+        "ruleName": "Desk kit 800",
+        "type": "BUNDLE_FIXED_PRICE",
+        "status": "APPLIED",
+        "discountAmount": 200.0,
+        "reason": "Applied: 1 x bundle at 800.00 saving 200.00 on component value 1000.00"
+      }
+    ]
+  }
+}

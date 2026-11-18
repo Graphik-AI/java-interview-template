@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: promo-engine
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false

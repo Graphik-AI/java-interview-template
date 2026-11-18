@@ -1,0 +1,62 @@
+{
+  "description": "Running subtotal 2500.00 qualifies for the only configured tier, >= 2000.00, which grants 150.00.",
+  "request": {
+    "cart": {
+      "cartId": "cart-tier",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-ORDER",
+          "category": "GENERAL",
+          "unitPrice": 2500.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_TIER",
+        "name": "Spend 2000 save 150",
+        "type": "TIERED_SPEND",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {},
+        "discountConfig": {
+          "tiers": [{ "minSubtotal": 2000.0, "amount": 150.0 }]
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-tier",
+    "currency": "INR",
+    "originalSubtotal": 2500.0,
+    "totalDiscount": 150.0,
+    "finalTotal": 2350.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-ORDER",
+        "category": "GENERAL",
+        "quantity": 1,
+        "unitPrice": 2500.0,
+        "originalExtendedPrice": 2500.0,
+        "discount": 150.0,
+        "finalExtendedPrice": 2350.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_TIER",
+        "ruleName": "Spend 2000 save 150",
+        "type": "TIERED_SPEND",
+        "status": "APPLIED",
+        "discountAmount": 150.0,
+        "reason": "Applied: spend tier >= 2000.00 grants 150.00 off cart (running subtotal 2500.00)"
+      }
+    ]
+  }
+}

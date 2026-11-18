@@ -1,0 +1,67 @@
+{
+  "description": "Coupon SAVE10 and payment method UPI both match. 10% of the 1000.00 cart.",
+  "request": {
+    "cart": {
+      "cartId": "cart-coupon",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "couponCode": "SAVE10",
+      "paymentMethod": "UPI",
+      "items": [
+        {
+          "sku": "SKU-ORDER",
+          "category": "GENERAL",
+          "unitPrice": 1000.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_UPI",
+        "name": "UPI coupon 10%",
+        "type": "COUPON_PAYMENT_OFF",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "couponCode": "SAVE10",
+          "paymentMethod": "UPI"
+        },
+        "discountConfig": {
+          "percentage": 10
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-coupon",
+    "currency": "INR",
+    "originalSubtotal": 1000.0,
+    "totalDiscount": 100.0,
+    "finalTotal": 900.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-ORDER",
+        "category": "GENERAL",
+        "quantity": 1,
+        "unitPrice": 1000.0,
+        "originalExtendedPrice": 1000.0,
+        "discount": 100.0,
+        "finalExtendedPrice": 900.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_UPI",
+        "ruleName": "UPI coupon 10%",
+        "type": "COUPON_PAYMENT_OFF",
+        "status": "APPLIED",
+        "discountAmount": 100.0,
+        "reason": "Applied: 10% coupon SAVE10 via UPI off cart (running subtotal 1000.00)"
+      }
+    ]
+  }
+}

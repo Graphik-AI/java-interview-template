@@ -1,0 +1,65 @@
+{
+  "description": "Buy 2 get 1 free on a line whose quantity is an exact multiple of 3. One unit is free.",
+  "request": {
+    "cart": {
+      "cartId": "cart-bxgy",
+      "currency": "USD",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-MUG",
+          "category": "KITCHEN",
+          "unitPrice": 120.0,
+          "quantity": 3
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_MUG",
+        "name": "Mug buy 2 get 1",
+        "type": "BUY_X_GET_Y_FREE",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "sku": "SKU-MUG"
+        },
+        "discountConfig": {
+          "buyQuantity": 2,
+          "freeQuantity": 1
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-bxgy",
+    "currency": "USD",
+    "originalSubtotal": 360.0,
+    "totalDiscount": 120.0,
+    "finalTotal": 240.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-MUG",
+        "category": "KITCHEN",
+        "quantity": 3,
+        "unitPrice": 120.0,
+        "originalExtendedPrice": 360.0,
+        "discount": 120.0,
+        "finalExtendedPrice": 240.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_MUG",
+        "ruleName": "Mug buy 2 get 1",
+        "type": "BUY_X_GET_Y_FREE",
+        "status": "APPLIED",
+        "discountAmount": 120.0,
+        "reason": "Applied: buy 2 get 1 free on SKU-MUG (1 unit free)"
+      }
+    ]
+  }
+}
