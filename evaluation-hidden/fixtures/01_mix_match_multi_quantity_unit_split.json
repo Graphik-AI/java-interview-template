@@ -1,0 +1,95 @@
+{
+  "description": "Buy 2 get 1 cheapest free across three SKUs. Five units qualify, so one unit is free. That unit is one of the three 10.00 units, not the whole cheap line.",
+  "request": {
+    "cart": {
+      "cartId": "cart-mix",
+      "currency": "USD",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-PREMIUM",
+          "category": "GADGETS",
+          "unitPrice": 30.0,
+          "quantity": 1
+        },
+        {
+          "sku": "SKU-MID",
+          "category": "GADGETS",
+          "unitPrice": 20.0,
+          "quantity": 1
+        },
+        {
+          "sku": "SKU-CHEAP",
+          "category": "GADGETS",
+          "unitPrice": 10.0,
+          "quantity": 3
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_MIX",
+        "name": "Buy 2 get cheapest free",
+        "type": "BUY_X_GET_CHEAPEST_FREE",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "skus": ["SKU-PREMIUM", "SKU-MID", "SKU-CHEAP"]
+        },
+        "discountConfig": {
+          "buyQuantity": 2,
+          "freeQuantity": 1
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-mix",
+    "currency": "USD",
+    "originalSubtotal": 80.0,
+    "totalDiscount": 10.0,
+    "finalTotal": 70.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-PREMIUM",
+        "category": "GADGETS",
+        "quantity": 1,
+        "unitPrice": 30.0,
+        "originalExtendedPrice": 30.0,
+        "discount": 0.0,
+        "finalExtendedPrice": 30.0
+      },
+      {
+        "sku": "SKU-MID",
+        "category": "GADGETS",
+        "quantity": 1,
+        "unitPrice": 20.0,
+        "originalExtendedPrice": 20.0,
+        "discount": 0.0,
+        "finalExtendedPrice": 20.0
+      },
+      {
+        "sku": "SKU-CHEAP",
+        "category": "GADGETS",
+        "quantity": 3,
+        "unitPrice": 10.0,
+        "originalExtendedPrice": 30.0,
+        "discount": 10.0,
+        "finalExtendedPrice": 20.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_MIX",
+        "ruleName": "Buy 2 get cheapest free",
+        "type": "BUY_X_GET_CHEAPEST_FREE",
+        "status": "APPLIED",
+        "discountAmount": 10.0,
+        "reason": "Applied: buy 2 get 1 cheapest free (1 unit free)"
+      }
+    ]
+  }
+}

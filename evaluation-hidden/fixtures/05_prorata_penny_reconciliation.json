@@ -1,0 +1,94 @@
+{
+  "description": "A flat 10.00 cart discount across three equal 10.00 lines. Largest-remainder pennies give the earliest line the extra cent: 3.34, 3.33, 3.33. Line finals sum to the cart final.",
+  "request": {
+    "cart": {
+      "cartId": "cart-penny",
+      "currency": "USD",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-A",
+          "category": "GENERAL",
+          "unitPrice": 10.0,
+          "quantity": 1
+        },
+        {
+          "sku": "SKU-B",
+          "category": "GENERAL",
+          "unitPrice": 10.0,
+          "quantity": 1
+        },
+        {
+          "sku": "SKU-C",
+          "category": "GENERAL",
+          "unitPrice": 10.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_FLAT",
+        "name": "10 off",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "minSubtotal": 10.0
+        },
+        "discountConfig": {
+          "amount": 10.0
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-penny",
+    "currency": "USD",
+    "originalSubtotal": 30.0,
+    "totalDiscount": 10.0,
+    "finalTotal": 20.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-A",
+        "category": "GENERAL",
+        "quantity": 1,
+        "unitPrice": 10.0,
+        "originalExtendedPrice": 10.0,
+        "discount": 3.34,
+        "finalExtendedPrice": 6.66
+      },
+      {
+        "sku": "SKU-B",
+        "category": "GENERAL",
+        "quantity": 1,
+        "unitPrice": 10.0,
+        "originalExtendedPrice": 10.0,
+        "discount": 3.33,
+        "finalExtendedPrice": 6.67
+      },
+      {
+        "sku": "SKU-C",
+        "category": "GENERAL",
+        "quantity": 1,
+        "unitPrice": 10.0,
+        "originalExtendedPrice": 10.0,
+        "discount": 3.33,
+        "finalExtendedPrice": 6.67
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_FLAT",
+        "ruleName": "10 off",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "status": "APPLIED",
+        "discountAmount": 10.0,
+        "reason": "Applied: 10.00 off cart (running subtotal 30.00 >= threshold 10.00)"
+      }
+    ]
+  }
+}

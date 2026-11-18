@@ -1,0 +1,110 @@
+{
+  "description": "PROMO_Z is listed first but PROMO_A sorts ahead at the same priority because id order is ascending. PROMO_A claims CART_LEVEL. The other two rules are skipped against PROMO_A.",
+  "request": {
+    "cart": {
+      "cartId": "cart-tie",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-ITEM",
+          "category": "GENERAL",
+          "unitPrice": 200.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_Z",
+        "name": "Z saves 50",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "priority": 1,
+        "exclusiveGroup": "CART_LEVEL",
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "minSubtotal": 100.0
+        },
+        "discountConfig": {
+          "amount": 50.0
+        }
+      },
+      {
+        "id": "PROMO_A",
+        "name": "A saves 20",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "priority": 1,
+        "exclusiveGroup": "CART_LEVEL",
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "minSubtotal": 100.0
+        },
+        "discountConfig": {
+          "amount": 20.0
+        }
+      },
+      {
+        "id": "PROMO_M",
+        "name": "M saves 30",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "priority": 2,
+        "exclusiveGroup": "CART_LEVEL",
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "minSubtotal": 100.0
+        },
+        "discountConfig": {
+          "amount": 30.0
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-tie",
+    "currency": "INR",
+    "originalSubtotal": 200.0,
+    "totalDiscount": 20.0,
+    "finalTotal": 180.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-ITEM",
+        "category": "GENERAL",
+        "quantity": 1,
+        "unitPrice": 200.0,
+        "originalExtendedPrice": 200.0,
+        "discount": 20.0,
+        "finalExtendedPrice": 180.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_A",
+        "ruleName": "A saves 20",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "status": "APPLIED",
+        "discountAmount": 20.0,
+        "reason": "Applied: 20.00 off cart (running subtotal 200.00 >= threshold 100.00)"
+      },
+      {
+        "ruleId": "PROMO_Z",
+        "ruleName": "Z saves 50",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "status": "SKIPPED",
+        "discountAmount": 0.0,
+        "reason": "Skipped: conflicts with already applied rule PROMO_A in exclusiveGroup 'CART_LEVEL'"
+      },
+      {
+        "ruleId": "PROMO_M",
+        "ruleName": "M saves 30",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "status": "SKIPPED",
+        "discountAmount": 0.0,
+        "reason": "Skipped: conflicts with already applied rule PROMO_A in exclusiveGroup 'CART_LEVEL'"
+      }
+    ]
+  }
+}

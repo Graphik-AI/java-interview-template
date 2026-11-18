@@ -1,0 +1,133 @@
+{
+  "description": "Cart coupon save20 matches rule code SAVE20. One rule starts at the evaluation timestamp and one ends there; both apply. The caller is STANDARD, so the VIP rule is skipped.",
+  "request": {
+    "cart": {
+      "cartId": "cart-boundary",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-06-15T12:00:00Z",
+      "userTier": "STANDARD",
+      "couponCode": "save20",
+      "paymentMethod": "CARD",
+      "items": [
+        {
+          "sku": "SKU-BOOK",
+          "category": "BOOKS",
+          "unitPrice": 200.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_FROM",
+        "name": "Books from this instant",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-06-15T12:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "category": "BOOKS"
+        },
+        "discountConfig": {
+          "percentage": 10
+        }
+      },
+      {
+        "id": "PROMO_TO",
+        "name": "Books through this instant",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-06-15T12:00:00Z",
+        "conditions": {
+          "category": "BOOKS"
+        },
+        "discountConfig": {
+          "percentage": 5
+        }
+      },
+      {
+        "id": "PROMO_COUPON",
+        "name": "Save 20 coupon",
+        "type": "COUPON_PAYMENT_OFF",
+        "priority": 3,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "couponCode": "SAVE20"
+        },
+        "discountConfig": {
+          "percentage": 10
+        }
+      },
+      {
+        "id": "PROMO_VIP",
+        "name": "VIP extra 10%",
+        "type": "VIP_TIER_PERCENTAGE_OFF",
+        "priority": 4,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {},
+        "discountConfig": {
+          "percentage": 10
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-boundary",
+    "currency": "INR",
+    "originalSubtotal": 200.0,
+    "totalDiscount": 46.1,
+    "finalTotal": 153.9,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-BOOK",
+        "category": "BOOKS",
+        "quantity": 1,
+        "unitPrice": 200.0,
+        "originalExtendedPrice": 200.0,
+        "discount": 46.1,
+        "finalExtendedPrice": 153.9
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_FROM",
+        "ruleName": "Books from this instant",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "APPLIED",
+        "discountAmount": 20.0,
+        "reason": "Applied: 10% off category BOOKS"
+      },
+      {
+        "ruleId": "PROMO_TO",
+        "ruleName": "Books through this instant",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "APPLIED",
+        "discountAmount": 9.0,
+        "reason": "Applied: 5% off category BOOKS"
+      },
+      {
+        "ruleId": "PROMO_COUPON",
+        "ruleName": "Save 20 coupon",
+        "type": "COUPON_PAYMENT_OFF",
+        "status": "APPLIED",
+        "discountAmount": 17.1,
+        "reason": "Applied: 10% coupon SAVE20 off cart (running subtotal 171.00)"
+      },
+      {
+        "ruleId": "PROMO_VIP",
+        "ruleName": "VIP extra 10%",
+        "type": "VIP_TIER_PERCENTAGE_OFF",
+        "status": "SKIPPED",
+        "discountAmount": 0.0,
+        "reason": "Skipped: userTier STANDARD is not VIP"
+      }
+    ]
+  }
+}

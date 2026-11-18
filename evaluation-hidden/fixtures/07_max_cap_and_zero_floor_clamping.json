@@ -1,0 +1,88 @@
+{
+  "description": "50% of 80.00 is 40.00, capped by maxDiscountAmount 15.00. The following 100.00 cart discount is capped at the remaining 65.00, so the line ends at 0.00.",
+  "request": {
+    "cart": {
+      "cartId": "cart-cap",
+      "currency": "USD",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-WIDGET",
+          "category": "GADGETS",
+          "unitPrice": 80.0,
+          "quantity": 1
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_PCT",
+        "name": "Gadgets 50% off capped",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "category": "GADGETS"
+        },
+        "discountConfig": {
+          "percentage": 50,
+          "maxDiscountAmount": 15.0
+        }
+      },
+      {
+        "id": "PROMO_FIX",
+        "name": "100 off",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "minSubtotal": 10.0
+        },
+        "discountConfig": {
+          "amount": 100.0
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-cap",
+    "currency": "USD",
+    "originalSubtotal": 80.0,
+    "totalDiscount": 80.0,
+    "finalTotal": 0.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-WIDGET",
+        "category": "GADGETS",
+        "quantity": 1,
+        "unitPrice": 80.0,
+        "originalExtendedPrice": 80.0,
+        "discount": 80.0,
+        "finalExtendedPrice": 0.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_PCT",
+        "ruleName": "Gadgets 50% off capped",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "APPLIED",
+        "discountAmount": 15.0,
+        "reason": "Applied: 50% off category GADGETS (capped at maxDiscountAmount 15.00)"
+      },
+      {
+        "ruleId": "PROMO_FIX",
+        "ruleName": "100 off",
+        "type": "CART_THRESHOLD_FIXED_OFF",
+        "status": "APPLIED",
+        "discountAmount": 65.0,
+        "reason": "Applied: 65.00 off cart (configured 100.00 capped at running subtotal 65.00)"
+      }
+    ]
+  }
+}

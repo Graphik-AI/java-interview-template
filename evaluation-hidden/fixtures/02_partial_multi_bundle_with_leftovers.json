@@ -1,0 +1,121 @@
+{
+  "description": "3 laptops, 2 mice, 2 bags form 2 bundles. One laptop is leftover at full price. The later 10% LAPTOP rule discounts only that leftover unit (80.00), not the bundled laptops.",
+  "request": {
+    "cart": {
+      "cartId": "cart-leftover",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {
+          "sku": "SKU-LAPTOP",
+          "category": "LAPTOP",
+          "unitPrice": 800.0,
+          "quantity": 3
+        },
+        {
+          "sku": "SKU-MOUSE",
+          "category": "ACCESSORIES",
+          "unitPrice": 150.0,
+          "quantity": 2
+        },
+        {
+          "sku": "SKU-BAG",
+          "category": "ACCESSORIES",
+          "unitPrice": 50.0,
+          "quantity": 2
+        }
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_DESK",
+        "name": "Desk kit 800",
+        "type": "BUNDLE_FIXED_PRICE",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "components": [
+            { "sku": "SKU-LAPTOP", "quantity": 1 },
+            { "sku": "SKU-MOUSE", "quantity": 1 },
+            { "sku": "SKU-BAG", "quantity": 1 }
+          ]
+        },
+        "discountConfig": {
+          "bundlePrice": 800.0
+        }
+      },
+      {
+        "id": "PROMO_LAPTOP",
+        "name": "Laptop 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {
+          "category": "LAPTOP"
+        },
+        "discountConfig": {
+          "percentage": 10
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-leftover",
+    "currency": "INR",
+    "originalSubtotal": 2800.0,
+    "totalDiscount": 480.0,
+    "finalTotal": 2320.0,
+    "itemizedBreakdown": [
+      {
+        "sku": "SKU-LAPTOP",
+        "category": "LAPTOP",
+        "quantity": 3,
+        "unitPrice": 800.0,
+        "originalExtendedPrice": 2400.0,
+        "discount": 400.0,
+        "finalExtendedPrice": 2000.0
+      },
+      {
+        "sku": "SKU-MOUSE",
+        "category": "ACCESSORIES",
+        "quantity": 2,
+        "unitPrice": 150.0,
+        "originalExtendedPrice": 300.0,
+        "discount": 60.0,
+        "finalExtendedPrice": 240.0
+      },
+      {
+        "sku": "SKU-BAG",
+        "category": "ACCESSORIES",
+        "quantity": 2,
+        "unitPrice": 50.0,
+        "originalExtendedPrice": 100.0,
+        "discount": 20.0,
+        "finalExtendedPrice": 80.0
+      }
+    ],
+    "auditTrail": [
+      {
+        "ruleId": "PROMO_DESK",
+        "ruleName": "Desk kit 800",
+        "type": "BUNDLE_FIXED_PRICE",
+        "status": "APPLIED",
+        "discountAmount": 400.0,
+        "reason": "Applied: 2 x bundle at 800.00 saving 200.00 on component value 1000.00"
+      },
+      {
+        "ruleId": "PROMO_LAPTOP",
+        "ruleName": "Laptop 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "status": "APPLIED",
+        "discountAmount": 80.0,
+        "reason": "Applied: 10% off category LAPTOP"
+      }
+    ]
+  }
+}
