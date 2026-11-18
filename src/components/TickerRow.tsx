@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTrackRender } from '../eval/RenderTracker';
 import { formatChangePercent, formatPrice, formatVolume } from '../format/market';
 import type { StreamItem } from '../types/stream';
 
@@ -10,6 +11,7 @@ type TickerRowProps = {
 };
 
 export function TickerRow({ item, pinned, onPress, onTogglePin }: TickerRowProps) {
+  useTrackRender(`row:${item.id}`);
   const movingUp = item.changePercent > 0;
   const movingDown = item.changePercent < 0;
   const halted = item.status === 'HALTED';
