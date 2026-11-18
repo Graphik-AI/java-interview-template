@@ -1,0 +1,44 @@
+{
+  "description": "15% is rounded once per line. 99.99 yields 15.00 and each 1.25 yields 0.19. The line discounts sum to 15.38. Percentage of the combined 102.49 base would be 15.37.",
+  "request": {
+    "cart": {
+      "cartId": "cart-round",
+      "currency": "USD",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-ODD", "category": "GADGETS", "unitPrice": 33.33, "quantity": 3},
+        {"sku": "SKU-PENNY-A", "category": "GADGETS", "unitPrice": 1.25, "quantity": 1},
+        {"sku": "SKU-PENNY-B", "category": "GADGETS", "unitPrice": 1.25, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_GADGET",
+        "name": "Gadgets 15% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"category": "GADGETS"},
+        "discountConfig": {"percentage": 15}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-round",
+    "currency": "USD",
+    "originalSubtotal": 102.49,
+    "totalDiscount": 15.38,
+    "finalTotal": 87.11,
+    "itemizedBreakdown": [
+      {"sku": "SKU-ODD", "category": "GADGETS", "quantity": 3, "unitPrice": 33.33, "originalExtendedPrice": 99.99, "discount": 15.00, "finalExtendedPrice": 84.99},
+      {"sku": "SKU-PENNY-A", "category": "GADGETS", "quantity": 1, "unitPrice": 1.25, "originalExtendedPrice": 1.25, "discount": 0.19, "finalExtendedPrice": 1.06},
+      {"sku": "SKU-PENNY-B", "category": "GADGETS", "quantity": 1, "unitPrice": 1.25, "originalExtendedPrice": 1.25, "discount": 0.19, "finalExtendedPrice": 1.06}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_GADGET", "ruleName": "Gadgets 15% off", "type": "PERCENTAGE_OFF_CATEGORY", "status": "APPLIED", "discountAmount": 15.38, "reason": "Applied: 15% off category GADGETS"}
+    ]
+  }
+}

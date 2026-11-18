@@ -1,0 +1,52 @@
+{
+  "description": "Two 10% category rules on one 100.00 line. The second sees 90.00 and grants 9.00, not another 10.00.",
+  "request": {
+    "cart": {
+      "cartId": "cart-cascade-pct",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-SHIRT", "category": "APPAREL", "unitPrice": 100.00, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_FIRST",
+        "name": "First 10%",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"category": "APPAREL"},
+        "discountConfig": {"percentage": 10}
+      },
+      {
+        "id": "PROMO_SECOND",
+        "name": "Second 10%",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"category": "APPAREL"},
+        "discountConfig": {"percentage": 10}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-cascade-pct",
+    "currency": "INR",
+    "originalSubtotal": 100.00,
+    "totalDiscount": 19.00,
+    "finalTotal": 81.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-SHIRT", "category": "APPAREL", "quantity": 1, "unitPrice": 100.00, "originalExtendedPrice": 100.00, "discount": 19.00, "finalExtendedPrice": 81.00}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_FIRST", "ruleName": "First 10%", "type": "PERCENTAGE_OFF_CATEGORY", "status": "APPLIED", "discountAmount": 10.00, "reason": "Applied: 10% off category APPAREL"},
+      {"ruleId": "PROMO_SECOND", "ruleName": "Second 10%", "type": "PERCENTAGE_OFF_CATEGORY", "status": "APPLIED", "discountAmount": 9.00, "reason": "Applied: 10% off category APPAREL"}
+    ]
+  }
+}

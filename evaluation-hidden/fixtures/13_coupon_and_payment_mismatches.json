@@ -1,0 +1,54 @@
+{
+  "description": "Cart coupon OTHER does not match SAVE10. A second rule matches OTHER but the cart payment method is CASH, not UPI.",
+  "request": {
+    "cart": {
+      "cartId": "cart-mismatch",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "couponCode": "OTHER",
+      "paymentMethod": "CASH",
+      "items": [
+        {"sku": "SKU-ORDER", "category": "GENERAL", "unitPrice": 80.00, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_COUPON",
+        "name": "Save 10",
+        "type": "COUPON_PAYMENT_OFF",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"couponCode": "SAVE10"},
+        "discountConfig": {"percentage": 20}
+      },
+      {
+        "id": "PROMO_PAY",
+        "name": "Other via UPI",
+        "type": "COUPON_PAYMENT_OFF",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"couponCode": "OTHER", "paymentMethod": "UPI"},
+        "discountConfig": {"amount": 15.00}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-mismatch",
+    "currency": "INR",
+    "originalSubtotal": 80.00,
+    "totalDiscount": 0.00,
+    "finalTotal": 80.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-ORDER", "category": "GENERAL", "quantity": 1, "unitPrice": 80.00, "originalExtendedPrice": 80.00, "discount": 0.00, "finalExtendedPrice": 80.00}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_COUPON", "ruleName": "Save 10", "type": "COUPON_PAYMENT_OFF", "status": "SKIPPED", "discountAmount": 0.00, "reason": "Skipped: cart coupon does not match SAVE10"},
+      {"ruleId": "PROMO_PAY", "ruleName": "Other via UPI", "type": "COUPON_PAYMENT_OFF", "status": "SKIPPED", "discountAmount": 0.00, "reason": "Skipped: payment method does not match UPI"}
+    ]
+  }
+}

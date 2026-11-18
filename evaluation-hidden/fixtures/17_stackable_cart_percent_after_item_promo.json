@@ -1,0 +1,56 @@
+{
+  "description": "Item percents run first. The cart percent omits stackableWithItemPromos, so it prices the full running subtotal 460.00, including lines that already took a discount.",
+  "request": {
+    "cart": {
+      "cartId": "cart-stacks",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-TEE", "category": "APPAREL", "unitPrice": 200.00, "quantity": 1},
+        {"sku": "SKU-CAP", "category": "APPAREL", "unitPrice": 200.00, "quantity": 1},
+        {"sku": "SKU-MUG", "category": "HOME", "unitPrice": 100.00, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_APP",
+        "name": "Apparel 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"category": "APPAREL"},
+        "discountConfig": {"percentage": 10}
+      },
+      {
+        "id": "PROMO_CART",
+        "name": "Extra 10% on the cart",
+        "type": "CART_PERCENTAGE_OFF",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {},
+        "discountConfig": {"percentage": 10}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-stacks",
+    "currency": "INR",
+    "originalSubtotal": 500.00,
+    "totalDiscount": 86.00,
+    "finalTotal": 414.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-TEE", "category": "APPAREL", "quantity": 1, "unitPrice": 200.00, "originalExtendedPrice": 200.00, "discount": 38.00, "finalExtendedPrice": 162.00},
+      {"sku": "SKU-CAP", "category": "APPAREL", "quantity": 1, "unitPrice": 200.00, "originalExtendedPrice": 200.00, "discount": 38.00, "finalExtendedPrice": 162.00},
+      {"sku": "SKU-MUG", "category": "HOME", "quantity": 1, "unitPrice": 100.00, "originalExtendedPrice": 100.00, "discount": 10.00, "finalExtendedPrice": 90.00}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_APP", "ruleName": "Apparel 10% off", "type": "PERCENTAGE_OFF_CATEGORY", "status": "APPLIED", "discountAmount": 40.00, "reason": "Applied: 10% off category APPAREL"},
+      {"ruleId": "PROMO_CART", "ruleName": "Extra 10% on the cart", "type": "CART_PERCENTAGE_OFF", "status": "APPLIED", "discountAmount": 46.00, "reason": "Applied: 10% off cart (running subtotal 460.00)"}
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "description": "A 200.00 cart meets spend tier minSubtotal 200.00 and takes 40.00 off. The next spend tier sees running subtotal 160.00 and does not qualify for 180.00.",
+  "request": {
+    "cart": {
+      "cartId": "cart-running-threshold",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-ORDER", "category": "GENERAL", "unitPrice": 200.00, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_EQUAL",
+        "name": "Exact threshold 40 off",
+        "type": "TIERED_SPEND",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {},
+        "discountConfig": {
+          "tiers": [{"minSubtotal": 200.00, "amount": 40.00}]
+        }
+      },
+      {
+        "id": "PROMO_LATER",
+        "name": "Needs 180",
+        "type": "TIERED_SPEND",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {},
+        "discountConfig": {
+          "tiers": [{"minSubtotal": 180.00, "amount": 25.00}]
+        }
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-running-threshold",
+    "currency": "INR",
+    "originalSubtotal": 200.00,
+    "totalDiscount": 40.00,
+    "finalTotal": 160.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-ORDER", "category": "GENERAL", "quantity": 1, "unitPrice": 200.00, "originalExtendedPrice": 200.00, "discount": 40.00, "finalExtendedPrice": 160.00}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_EQUAL", "ruleName": "Exact threshold 40 off", "type": "TIERED_SPEND", "status": "APPLIED", "discountAmount": 40.00, "reason": "Applied: spend tier >= 200.00 grants 40.00 off cart (running subtotal 200.00)"},
+      {"ruleId": "PROMO_LATER", "ruleName": "Needs 180", "type": "TIERED_SPEND", "status": "SKIPPED", "discountAmount": 0.00, "reason": "Skipped: running subtotal 160.00 below the lowest spend tier 180.00"}
+    ]
+  }
+}

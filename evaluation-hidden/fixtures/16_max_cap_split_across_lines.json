@@ -1,0 +1,42 @@
+{
+  "description": "25% of 80.00 and 40.00 is 20.00 and 10.00. maxDiscountAmount 10.00 is then split in proportion to those uncapped discounts: 6.67 and 3.33.",
+  "request": {
+    "cart": {
+      "cartId": "cart-cap-split",
+      "currency": "USD",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-BIG", "category": "GADGETS", "unitPrice": 80.00, "quantity": 1},
+        {"sku": "SKU-SMALL", "category": "GADGETS", "unitPrice": 40.00, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_CAP",
+        "name": "Gadgets 25% capped at 10",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"category": "GADGETS"},
+        "discountConfig": {"percentage": 25, "maxDiscountAmount": 10.00}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-cap-split",
+    "currency": "USD",
+    "originalSubtotal": 120.00,
+    "totalDiscount": 10.00,
+    "finalTotal": 110.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-BIG", "category": "GADGETS", "quantity": 1, "unitPrice": 80.00, "originalExtendedPrice": 80.00, "discount": 6.67, "finalExtendedPrice": 73.33},
+      {"sku": "SKU-SMALL", "category": "GADGETS", "quantity": 1, "unitPrice": 40.00, "originalExtendedPrice": 40.00, "discount": 3.33, "finalExtendedPrice": 36.67}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_CAP", "ruleName": "Gadgets 25% capped at 10", "type": "PERCENTAGE_OFF_CATEGORY", "status": "APPLIED", "discountAmount": 10.00, "reason": "Applied: 25% off category GADGETS (capped at maxDiscountAmount 10.00)"}
+    ]
+  }
+}

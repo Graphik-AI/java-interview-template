@@ -1,0 +1,52 @@
+{
+  "description": "The higher-priority rule is outside the window, so it does not claim SEASONAL. The later in-window rule in that group still applies.",
+  "request": {
+    "cart": {
+      "cartId": "cart-unclaimed",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-06-15T12:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-BOOK", "category": "BOOKS", "unitPrice": 400.00, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_EXPIRED",
+        "name": "Expired books 50% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 1,
+        "exclusiveGroup": "SEASONAL",
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-06-01T00:00:00Z",
+        "conditions": {"category": "BOOKS"},
+        "discountConfig": {"percentage": 50}
+      },
+      {
+        "id": "PROMO_LIVE",
+        "name": "Live books 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 2,
+        "exclusiveGroup": "SEASONAL",
+        "validFrom": "2026-06-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"category": "BOOKS"},
+        "discountConfig": {"percentage": 10}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-unclaimed",
+    "currency": "INR",
+    "originalSubtotal": 400.00,
+    "totalDiscount": 40.00,
+    "finalTotal": 360.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-BOOK", "category": "BOOKS", "quantity": 1, "unitPrice": 400.00, "originalExtendedPrice": 400.00, "discount": 40.00, "finalExtendedPrice": 360.00}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_EXPIRED", "ruleName": "Expired books 50% off", "type": "PERCENTAGE_OFF_CATEGORY", "status": "SKIPPED", "discountAmount": 0.00, "reason": "Skipped: evaluationTimestamp 2026-06-15T12:00:00Z outside validity window [2026-01-01T00:00:00Z, 2026-06-01T00:00:00Z]"},
+      {"ruleId": "PROMO_LIVE", "ruleName": "Live books 10% off", "type": "PERCENTAGE_OFF_CATEGORY", "status": "APPLIED", "discountAmount": 40.00, "reason": "Applied: 10% off category BOOKS"}
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "description": "Buy 2 get 1 cheapest free on single-SKU pools. Quantity 4 frees 1 unit, quantity 7 frees 2, quantity 2 frees none.",
+  "request": {
+    "cart": {
+      "cartId": "cart-partial-qty",
+      "currency": "USD",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-MUG", "category": "KITCHEN", "unitPrice": 40.00, "quantity": 4},
+        {"sku": "SKU-BOWL", "category": "KITCHEN", "unitPrice": 30.00, "quantity": 7},
+        {"sku": "SKU-CUP", "category": "KITCHEN", "unitPrice": 10.00, "quantity": 2}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_MUG",
+        "name": "Mug buy 2 get 1",
+        "type": "BUY_X_GET_CHEAPEST_FREE",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"skus": ["SKU-MUG"]},
+        "discountConfig": {"buyQuantity": 2, "freeQuantity": 1}
+      },
+      {
+        "id": "PROMO_BOWL",
+        "name": "Bowl buy 2 get 1",
+        "type": "BUY_X_GET_CHEAPEST_FREE",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"skus": ["SKU-BOWL"]},
+        "discountConfig": {"buyQuantity": 2, "freeQuantity": 1}
+      },
+      {
+        "id": "PROMO_CUP",
+        "name": "Cup buy 2 get 1",
+        "type": "BUY_X_GET_CHEAPEST_FREE",
+        "priority": 3,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"skus": ["SKU-CUP"]},
+        "discountConfig": {"buyQuantity": 2, "freeQuantity": 1}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-partial-qty",
+    "currency": "USD",
+    "originalSubtotal": 390.00,
+    "totalDiscount": 100.00,
+    "finalTotal": 290.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-MUG", "category": "KITCHEN", "quantity": 4, "unitPrice": 40.00, "originalExtendedPrice": 160.00, "discount": 40.00, "finalExtendedPrice": 120.00},
+      {"sku": "SKU-BOWL", "category": "KITCHEN", "quantity": 7, "unitPrice": 30.00, "originalExtendedPrice": 210.00, "discount": 60.00, "finalExtendedPrice": 150.00},
+      {"sku": "SKU-CUP", "category": "KITCHEN", "quantity": 2, "unitPrice": 10.00, "originalExtendedPrice": 20.00, "discount": 0.00, "finalExtendedPrice": 20.00}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_MUG", "ruleName": "Mug buy 2 get 1", "type": "BUY_X_GET_CHEAPEST_FREE", "status": "APPLIED", "discountAmount": 40.00, "reason": "Applied: buy 2 get 1 cheapest free (1 unit free)"},
+      {"ruleId": "PROMO_BOWL", "ruleName": "Bowl buy 2 get 1", "type": "BUY_X_GET_CHEAPEST_FREE", "status": "APPLIED", "discountAmount": 60.00, "reason": "Applied: buy 2 get 1 cheapest free (2 units free)"},
+      {"ruleId": "PROMO_CUP", "ruleName": "Cup buy 2 get 1", "type": "BUY_X_GET_CHEAPEST_FREE", "status": "SKIPPED", "discountAmount": 0.00, "reason": "Skipped: eligible quantity 2 does not qualify for buy 2 get 1 cheapest free"}
+    ]
+  }
+}

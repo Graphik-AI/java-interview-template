@@ -32,6 +32,23 @@ Stdout prints `PASS` or `FAIL` and the JSON path of the first mismatch. Delete t
 
 A wrong audit `discountAmount` with a right cart total usually means the cap, tier selection, or rule order is wrong even though the zero floor hid it. A right total with a wrong line split points to penny allocation or bundle allocation.
 
+## Extension Fixtures (`09`–`18`)
+
+`eval/30min-extension` adds `09` through `18` in this same folder. `HiddenEvaluationTest` loads every JSON file, so the same command runs all 18.
+
+| Fixture | What it catches |
+| --- | --- |
+| `09_buy_x_get_y_remainder_quantities` | Quantity 4 frees 1 unit, 7 frees 2, and 2 frees none under `BUY_X_GET_CHEAPEST_FREE`. |
+| `10_cascading_category_percentages` | The second 10% is applied to `90.00`, granting `9.00`. |
+| `11_skipped_rule_does_not_claim_group` | An expired rule in `SEASONAL` does not block a later live rule in that group. |
+| `12_threshold_uses_running_subtotal` | `base >= minSubtotal` qualifies when equal (`200.00`); the next spend tier sees `160.00`, not `200.00`. |
+| `13_coupon_and_payment_mismatches` | Wrong coupon and wrong payment method both skip without altering prices. |
+| `14_non_stackable_empty_base` | When every line already took an item promo, a non-stackable cart rule is skipped. |
+| `15_per_line_rounding` | 15% is rounded per line to `15.38`. Rounding the combined `102.49` base yields `15.37`. |
+| `16_max_cap_split_across_lines` | The `10.00` cap is split pro-rata across uncapped line discounts as `6.67` and `3.33`. |
+| `17_stackable_cart_percent_after_item_promo` | A cart percent with `stackableWithItemPromos: null` includes item-discounted lines (running subtotal `460.00`). |
+| `18_cart_priority_before_item_promo` | Priority order puts the cart percent first even though it is listed second (`20.00`), then the category rule grants `18.00`. |
+
 ---
 
 ## Senior Scoring Rubric (AI-Assisted Round)

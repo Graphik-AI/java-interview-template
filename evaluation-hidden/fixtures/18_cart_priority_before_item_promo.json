@@ -1,0 +1,52 @@
+{
+  "description": "Cart percentage is listed second but priority 1, so it runs first and takes 10% of 200.00. The category rule then takes 10% of the remaining 180.00. Request order would swap the audit amounts even though the final total matches.",
+  "request": {
+    "cart": {
+      "cartId": "cart-priority",
+      "currency": "INR",
+      "evaluationTimestamp": "2026-03-15T10:00:00Z",
+      "userTier": "STANDARD",
+      "items": [
+        {"sku": "SKU-SHOES", "category": "FOOTWEAR", "unitPrice": 200.00, "quantity": 1}
+      ]
+    },
+    "promotions": [
+      {
+        "id": "PROMO_FOOT",
+        "name": "Footwear 10% off",
+        "type": "PERCENTAGE_OFF_CATEGORY",
+        "priority": 2,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {"category": "FOOTWEAR"},
+        "discountConfig": {"percentage": 10}
+      },
+      {
+        "id": "PROMO_CART",
+        "name": "Cart extra 10%",
+        "type": "CART_PERCENTAGE_OFF",
+        "priority": 1,
+        "exclusiveGroup": null,
+        "validFrom": "2026-01-01T00:00:00Z",
+        "validTo": "2026-12-31T23:59:59Z",
+        "conditions": {},
+        "discountConfig": {"percentage": 10}
+      }
+    ]
+  },
+  "expectedResponse": {
+    "cartId": "cart-priority",
+    "currency": "INR",
+    "originalSubtotal": 200.00,
+    "totalDiscount": 38.00,
+    "finalTotal": 162.00,
+    "itemizedBreakdown": [
+      {"sku": "SKU-SHOES", "category": "FOOTWEAR", "quantity": 1, "unitPrice": 200.00, "originalExtendedPrice": 200.00, "discount": 38.00, "finalExtendedPrice": 162.00}
+    ],
+    "auditTrail": [
+      {"ruleId": "PROMO_CART", "ruleName": "Cart extra 10%", "type": "CART_PERCENTAGE_OFF", "status": "APPLIED", "discountAmount": 20.00, "reason": "Applied: 10% off cart (running subtotal 200.00)"},
+      {"ruleId": "PROMO_FOOT", "ruleName": "Footwear 10% off", "type": "PERCENTAGE_OFF_CATEGORY", "status": "APPLIED", "discountAmount": 18.00, "reason": "Applied: 10% off category FOOTWEAR"}
+    ]
+  }
+}
