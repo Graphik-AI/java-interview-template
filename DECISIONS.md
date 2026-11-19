@@ -4,7 +4,7 @@ Fill this in before you submit. A few sentences per heading is enough.
 
 ## 1. Rule engine pattern and extensibility
 
-How would you add a fifth rule type without modifying existing rule classes?
+How would you add a new rule type without modifying existing rule classes?
 
 ## 2. Precision and rounding choices
 
