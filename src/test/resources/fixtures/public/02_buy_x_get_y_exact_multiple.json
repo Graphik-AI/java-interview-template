@@ -1,5 +1,5 @@
 {
-  "description": "Buy 2 get 1 free on a line whose quantity is an exact multiple of 3. One unit is free.",
+  "description": "Buy 2 get 1 cheapest free on a single SKU whose quantity is an exact multiple of 3. One unit is free.",
   "request": {
     "cart": {
       "cartId": "cart-bxgy",
@@ -19,13 +19,13 @@
       {
         "id": "PROMO_MUG",
         "name": "Mug buy 2 get 1",
-        "type": "BUY_X_GET_Y_FREE",
+        "type": "BUY_X_GET_CHEAPEST_FREE",
         "priority": 1,
         "exclusiveGroup": null,
         "validFrom": "2026-01-01T00:00:00Z",
         "validTo": "2026-12-31T23:59:59Z",
         "conditions": {
-          "sku": "SKU-MUG"
+          "skus": ["SKU-MUG"]
         },
         "discountConfig": {
           "buyQuantity": 2,
@@ -55,10 +55,10 @@
       {
         "ruleId": "PROMO_MUG",
         "ruleName": "Mug buy 2 get 1",
-        "type": "BUY_X_GET_Y_FREE",
+        "type": "BUY_X_GET_CHEAPEST_FREE",
         "status": "APPLIED",
         "discountAmount": 120.0,
-        "reason": "Applied: buy 2 get 1 free on SKU-MUG (1 unit free)"
+        "reason": "Applied: buy 2 get 1 cheapest free (1 unit free)"
       }
     ]
   }

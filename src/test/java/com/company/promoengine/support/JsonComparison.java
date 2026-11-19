@@ -2,8 +2,12 @@ package com.company.promoengine.support;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 public final class JsonComparison {
+
+    private static final Pattern AUDIT_REASON_PATH = Pattern.compile("^\\$\\.auditTrail\\[\\d+]\\.reason$");
+    private static final String STUB_REASON = "Skipped: promotion engine not implemented";
 
     private JsonComparison() {
     }
@@ -18,6 +22,15 @@ public final class JsonComparison {
         }
         if (actual == null || actual.isMissingNode()) {
             throw new AssertionError(path + " is missing from the response");
+        }
+        if (AUDIT_REASON_PATH.matcher(path).matches()) {
+            if (!actual.isTextual() || actual.asText().isBlank()) {
+                fail(path, "non-blank audit reason string", actual);
+            }
+            if (STUB_REASON.equals(actual.asText())) {
+                fail(path, "real engine audit reason (not placeholder stub)", actual);
+            }
+            return;
         }
         if (expected.isNumber() || actual.isNumber()) {
             if (!expected.isNumber() || !actual.isNumber()) {

@@ -79,8 +79,6 @@ public final class EvaluationMapper {
                         .toList();
         return new RuleConditions(
                 dto.category(),
-                dto.sku(),
-                money(dto.minSubtotal()),
                 dto.skus(),
                 blankToNull(dto.couponCode()),
                 blankToNull(dto.paymentMethod()),
