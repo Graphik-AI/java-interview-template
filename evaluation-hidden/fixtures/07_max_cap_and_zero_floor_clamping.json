@@ -1,5 +1,5 @@
 {
-  "description": "50% of 80.00 is 40.00, capped by maxDiscountAmount 15.00. The following 100.00 cart discount is capped at the remaining 65.00, so the line ends at 0.00.",
+  "description": "50% of 80.00 is 40.00, capped by maxDiscountAmount 15.00. The following 100.00 spend-tier discount is capped at the remaining 65.00, so the line ends at 0.00.",
   "request": {
     "cart": {
       "cartId": "cart-cap",
@@ -35,16 +35,16 @@
       {
         "id": "PROMO_FIX",
         "name": "100 off",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "priority": 2,
         "exclusiveGroup": null,
         "validFrom": "2026-01-01T00:00:00Z",
         "validTo": "2026-12-31T23:59:59Z",
-        "conditions": {
-          "minSubtotal": 10.0
-        },
+        "conditions": {},
         "discountConfig": {
-          "amount": 100.0
+          "tiers": [
+            { "minSubtotal": 10.0, "amount": 100.0 }
+          ]
         }
       }
     ]
@@ -78,10 +78,10 @@
       {
         "ruleId": "PROMO_FIX",
         "ruleName": "100 off",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "status": "APPLIED",
         "discountAmount": 65.0,
-        "reason": "Applied: 65.00 off cart (configured 100.00 capped at running subtotal 65.00)"
+        "reason": "Applied: spend tier >= 10.00 grants 65.00 off cart (capped at running subtotal 65.00)"
       }
     ]
   }

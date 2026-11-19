@@ -19,46 +19,46 @@
       {
         "id": "PROMO_Z",
         "name": "Z saves 50",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "priority": 1,
         "exclusiveGroup": "CART_LEVEL",
         "validFrom": "2026-01-01T00:00:00Z",
         "validTo": "2026-12-31T23:59:59Z",
-        "conditions": {
-          "minSubtotal": 100.0
-        },
+        "conditions": {},
         "discountConfig": {
-          "amount": 50.0
+          "tiers": [
+            { "minSubtotal": 100.0, "amount": 50.0 }
+          ]
         }
       },
       {
         "id": "PROMO_A",
         "name": "A saves 20",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "priority": 1,
         "exclusiveGroup": "CART_LEVEL",
         "validFrom": "2026-01-01T00:00:00Z",
         "validTo": "2026-12-31T23:59:59Z",
-        "conditions": {
-          "minSubtotal": 100.0
-        },
+        "conditions": {},
         "discountConfig": {
-          "amount": 20.0
+          "tiers": [
+            { "minSubtotal": 100.0, "amount": 20.0 }
+          ]
         }
       },
       {
         "id": "PROMO_M",
         "name": "M saves 30",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "priority": 2,
         "exclusiveGroup": "CART_LEVEL",
         "validFrom": "2026-01-01T00:00:00Z",
         "validTo": "2026-12-31T23:59:59Z",
-        "conditions": {
-          "minSubtotal": 100.0
-        },
+        "conditions": {},
         "discountConfig": {
-          "amount": 30.0
+          "tiers": [
+            { "minSubtotal": 100.0, "amount": 30.0 }
+          ]
         }
       }
     ]
@@ -84,15 +84,15 @@
       {
         "ruleId": "PROMO_A",
         "ruleName": "A saves 20",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "status": "APPLIED",
         "discountAmount": 20.0,
-        "reason": "Applied: 20.00 off cart (running subtotal 200.00 >= threshold 100.00)"
+        "reason": "Applied: spend tier >= 100.00 grants 20.00 off cart (running subtotal 200.00)"
       },
       {
         "ruleId": "PROMO_Z",
         "ruleName": "Z saves 50",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "status": "SKIPPED",
         "discountAmount": 0.0,
         "reason": "Skipped: conflicts with already applied rule PROMO_A in exclusiveGroup 'CART_LEVEL'"
@@ -100,7 +100,7 @@
       {
         "ruleId": "PROMO_M",
         "ruleName": "M saves 30",
-        "type": "CART_THRESHOLD_FIXED_OFF",
+        "type": "TIERED_SPEND",
         "status": "SKIPPED",
         "discountAmount": 0.0,
         "reason": "Skipped: conflicts with already applied rule PROMO_A in exclusiveGroup 'CART_LEVEL'"
