@@ -3,6 +3,7 @@ package com.company.promoengine.engine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.company.promoengine.domain.AuditEntry;
+import com.company.promoengine.domain.BundleComponent;
 import com.company.promoengine.domain.Cart;
 import com.company.promoengine.domain.CartItem;
 import com.company.promoengine.domain.DiscountConfig;
@@ -65,6 +66,14 @@ final class EngineTestSupport {
         return rule(id, RuleType.BUY_X_GET_CHEAPEST_FREE).buyQuantity(buy).freeQuantity(free).skus(skus);
     }
 
+    static RuleBuilder bundleRule(String id, String bundlePrice, BundleComponent... components) {
+        return rule(id, RuleType.BUNDLE_FIXED_PRICE).bundlePrice(bundlePrice).components(components);
+    }
+
+    static BundleComponent component(String sku, int quantity) {
+        return new BundleComponent(sku, quantity);
+    }
+
     /** Defaults: name = id, priority 1, no group, window covering {@link #NOW}. */
     static final class RuleBuilder {
         private final String id;
@@ -81,6 +90,8 @@ final class EngineTestSupport {
         private BigDecimal maxDiscountAmount;
         private Integer buyQuantity;
         private Integer freeQuantity;
+        private List<BundleComponent> components;
+        private BigDecimal bundlePrice;
         private boolean withoutConditions;
         private boolean withoutDiscountConfig;
 
@@ -131,6 +142,17 @@ final class EngineTestSupport {
             return this;
         }
 
+        /** {@code null} means "no components". */
+        RuleBuilder components(BundleComponent... values) {
+            this.components = values == null ? null : List.of(values);
+            return this;
+        }
+
+        RuleBuilder bundlePrice(String value) {
+            this.bundlePrice = value == null ? null : new BigDecimal(value);
+            return this;
+        }
+
         RuleBuilder percentage(String value) {
             this.percentage = value == null ? null : new BigDecimal(value);
             return this;
@@ -154,10 +176,11 @@ final class EngineTestSupport {
         PromotionRule build() {
             RuleConditions conditions = withoutConditions
                     ? null
-                    : new RuleConditions(category, skus, null, null, null);
+                    : new RuleConditions(category, skus, null, null, components);
             DiscountConfig discountConfig = withoutDiscountConfig
                     ? null
-                    : new DiscountConfig(percentage, null, buyQuantity, freeQuantity, maxDiscountAmount, null, null);
+                    : new DiscountConfig(percentage, null, buyQuantity, freeQuantity, maxDiscountAmount,
+                            bundlePrice, null);
             return new PromotionRule(id, name == null ? id : name, type, priority, exclusiveGroup,
                     stackableWithItemPromos, validFrom, validTo, conditions, discountConfig);
         }

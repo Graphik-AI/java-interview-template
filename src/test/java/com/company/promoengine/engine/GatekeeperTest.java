@@ -3,8 +3,10 @@ package com.company.promoengine.engine;
 import static com.company.promoengine.engine.EngineTestSupport.NOW;
 import static com.company.promoengine.engine.EngineTestSupport.WINDOW_END;
 import static com.company.promoengine.engine.EngineTestSupport.WINDOW_START;
+import static com.company.promoengine.engine.EngineTestSupport.bundleRule;
 import static com.company.promoengine.engine.EngineTestSupport.cart;
 import static com.company.promoengine.engine.EngineTestSupport.categoryRule;
+import static com.company.promoengine.engine.EngineTestSupport.component;
 import static com.company.promoengine.engine.EngineTestSupport.evaluate;
 import static com.company.promoengine.engine.EngineTestSupport.item;
 import static com.company.promoengine.engine.EngineTestSupport.money;
@@ -216,8 +218,25 @@ class GatekeeperTest {
             assertThat(result.finalTotal()).isEqualTo(money("0.04"));
         }
 
-        // A fully bundled category is covered in CategoryPercentageHandlerTest, because no
-        // bundle rule exists yet to bundle units through the engine.
+        @Test
+        void fullyBundledCategoryIsSkipped() {
+            // The bundle consumes every ACCESSORIES unit, so the later category rule finds none left.
+            var cart = cart(
+                    item("SKU-LAPTOP", "LAPTOP", "800.00", 1),
+                    item("SKU-MOUSE", "ACCESSORIES", "150.00", 1),
+                    item("SKU-BAG", "ACCESSORIES", "50.00", 1));
+
+            var result = evaluate(cart,
+                    bundleRule("PROMO_DESK", "800.00",
+                            component("SKU-LAPTOP", 1), component("SKU-MOUSE", 1), component("SKU-BAG", 1))
+                            .priority(1).build(),
+                    categoryRule("PROMO_ACC", "ACCESSORIES", "10").priority(2).build());
+
+            assertAudit(result, 0, "PROMO_DESK", RuleStatus.APPLIED, "200.00");
+            assertAudit(result, 1, "PROMO_ACC", RuleStatus.SKIPPED, "0.00");
+            assertThat(result.auditTrail().get(1).reason())
+                    .isEqualTo("Skipped: all units in category ACCESSORIES are already bundled");
+        }
     }
 
     @Nested
@@ -279,7 +298,7 @@ class GatekeeperTest {
 
         @ParameterizedTest
         @EnumSource(value = RuleType.class, mode = EnumSource.Mode.EXCLUDE,
-                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE"})
+                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE", "BUNDLE_FIXED_PRICE"})
         void ruleTypeWithoutHandlerIsSkipped(RuleType type) {
             var result = evaluate(BOOKS_100, rule("PROMO_X", type).build());
 
