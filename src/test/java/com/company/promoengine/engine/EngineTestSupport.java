@@ -75,6 +75,10 @@ final class EngineTestSupport {
         return new BundleComponent(sku, quantity);
     }
 
+    static RuleBuilder cartPercentageRule(String id, String percentage) {
+        return rule(id, RuleType.CART_PERCENTAGE_OFF).percentage(percentage);
+    }
+
     static RuleBuilder tieredRule(String id, SpendTier... tiers) {
         return rule(id, RuleType.TIERED_SPEND).tiers(tiers);
     }
@@ -108,6 +112,7 @@ final class EngineTestSupport {
         private String category;
         private List<String> skus;
         private BigDecimal percentage;
+        private BigDecimal amount;
         private BigDecimal maxDiscountAmount;
         private Integer buyQuantity;
         private Integer freeQuantity;
@@ -186,6 +191,11 @@ final class EngineTestSupport {
             return this;
         }
 
+        RuleBuilder amount(String value) {
+            this.amount = value == null ? null : new BigDecimal(value);
+            return this;
+        }
+
         RuleBuilder percentage(String value) {
             this.percentage = value == null ? null : new BigDecimal(value);
             return this;
@@ -212,7 +222,7 @@ final class EngineTestSupport {
                     : new RuleConditions(category, skus, null, null, components);
             DiscountConfig discountConfig = withoutDiscountConfig
                     ? null
-                    : new DiscountConfig(percentage, null, buyQuantity, freeQuantity, maxDiscountAmount,
+                    : new DiscountConfig(percentage, amount, buyQuantity, freeQuantity, maxDiscountAmount,
                             bundlePrice, tiers);
             return new PromotionRule(id, name == null ? id : name, type, priority, exclusiveGroup,
                     stackableWithItemPromos, validFrom, validTo, conditions, discountConfig);

@@ -266,7 +266,7 @@ class GatekeeperTest {
                     Arguments.of("invalid configuration", categoryRule("BLOCKER", "BOOKS", "0")),
                     Arguments.of("no matching category", categoryRule("BLOCKER", "ELECTRONICS", "50")),
                     Arguments.of("zero discount", categoryRule("BLOCKER", "CHEAP", "10")),
-                    Arguments.of("unsupported type", rule("BLOCKER", RuleType.CART_PERCENTAGE_OFF)));
+                    Arguments.of("unsupported type", rule("BLOCKER", RuleType.COUPON_PAYMENT_OFF)));
         }
 
         @ParameterizedTest(name = "{0}")
@@ -298,7 +298,8 @@ class GatekeeperTest {
 
         @ParameterizedTest
         @EnumSource(value = RuleType.class, mode = EnumSource.Mode.EXCLUDE,
-                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE", "BUNDLE_FIXED_PRICE", "TIERED_SPEND"})
+                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE", "BUNDLE_FIXED_PRICE", "TIERED_SPEND",
+                        "CART_PERCENTAGE_OFF"})
         void ruleTypeWithoutHandlerIsSkipped(RuleType type) {
             var result = evaluate(BOOKS_100, rule("PROMO_X", type).build());
 
@@ -321,7 +322,7 @@ class GatekeeperTest {
                     categoryRule("INVALID", "BOOKS", "150").build(),
                     categoryRule("NO_MATCH", "ELECTRONICS", "50").build(),
                     categoryRule("ZERO", "CHEAP", "10").build(),
-                    rule("UNSUPPORTED", RuleType.CART_PERCENTAGE_OFF).build());
+                    rule("UNSUPPORTED", RuleType.COUPON_PAYMENT_OFF).build());
 
             assertThat(result.itemizedBreakdown()).isEqualTo(baseline.itemizedBreakdown());
             assertThat(result.totalDiscount()).isEqualTo(money("0.00"));
