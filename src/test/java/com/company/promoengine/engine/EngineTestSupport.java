@@ -46,7 +46,12 @@ final class EngineTestSupport {
     }
 
     static Cart cart(List<CartItem> items) {
-        return new Cart("cart-1", "INR", NOW, UserTier.STANDARD, items, null, null);
+        return cartWith(null, null, items.toArray(CartItem[]::new));
+    }
+
+    /** A cart carrying a coupon code and payment method ({@code null} for none). */
+    static Cart cartWith(String couponCode, String paymentMethod, CartItem... items) {
+        return new Cart("cart-1", "INR", NOW, UserTier.STANDARD, List.of(items), couponCode, paymentMethod);
     }
 
     static List<BigDecimal> unitPrices(LineState line) {
@@ -73,6 +78,10 @@ final class EngineTestSupport {
 
     static BundleComponent component(String sku, int quantity) {
         return new BundleComponent(sku, quantity);
+    }
+
+    static RuleBuilder couponRule(String id, String couponCode) {
+        return rule(id, RuleType.COUPON_PAYMENT_OFF).couponCode(couponCode);
     }
 
     static RuleBuilder cartPercentageRule(String id, String percentage) {
@@ -110,6 +119,8 @@ final class EngineTestSupport {
         private Instant validFrom = WINDOW_START;
         private Instant validTo = WINDOW_END;
         private String category;
+        private String couponCode;
+        private String paymentMethod;
         private List<String> skus;
         private BigDecimal percentage;
         private BigDecimal amount;
@@ -191,6 +202,16 @@ final class EngineTestSupport {
             return this;
         }
 
+        RuleBuilder couponCode(String value) {
+            this.couponCode = value;
+            return this;
+        }
+
+        RuleBuilder paymentMethod(String value) {
+            this.paymentMethod = value;
+            return this;
+        }
+
         RuleBuilder amount(String value) {
             this.amount = value == null ? null : new BigDecimal(value);
             return this;
@@ -219,7 +240,7 @@ final class EngineTestSupport {
         PromotionRule build() {
             RuleConditions conditions = withoutConditions
                     ? null
-                    : new RuleConditions(category, skus, null, null, components);
+                    : new RuleConditions(category, skus, couponCode, paymentMethod, components);
             DiscountConfig discountConfig = withoutDiscountConfig
                     ? null
                     : new DiscountConfig(percentage, amount, buyQuantity, freeQuantity, maxDiscountAmount,

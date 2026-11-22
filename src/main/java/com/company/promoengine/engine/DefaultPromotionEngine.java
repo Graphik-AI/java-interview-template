@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,30 @@ public class DefaultPromotionEngine implements PromotionEngine {
 
     private final Map<RuleType, RuleHandler> handlers = new EnumMap<>(RuleType.class);
 
+    /** The Spring bean constructor: one handler per rule type. */
     public DefaultPromotionEngine() {
-        register(new CategoryPercentageHandler());
-        register(new BuyXGetCheapestFreeHandler());
-        register(new BundleFixedPriceHandler());
-        register(new TieredSpendHandler());
-        register(new CartPercentageHandler());
+        this(List.of(
+                new CategoryPercentageHandler(),
+                new BuyXGetCheapestFreeHandler(),
+                new BundleFixedPriceHandler(),
+                new TieredSpendHandler(),
+                new CartPercentageHandler(),
+                new CouponPaymentHandler()));
+    }
+
+    /**
+     * Registers the given handlers and fails fast unless every {@link RuleType} has exactly
+     * one. Package-private so tests can check the registry rules.
+     *
+     * @throws IllegalStateException if a rule type has no handler or more than one
+     */
+    DefaultPromotionEngine(List<RuleHandler> ruleHandlers) {
+        ruleHandlers.forEach(this::register);
+        Set<RuleType> missing = EnumSet.allOf(RuleType.class);
+        missing.removeAll(handlers.keySet());
+        if (!missing.isEmpty()) {
+            throw new IllegalStateException("No handler registered for " + missing);
+        }
     }
 
     private void register(RuleHandler handler) {
@@ -57,6 +76,11 @@ public class DefaultPromotionEngine implements PromotionEngine {
     public EvaluationResult evaluate(Cart cart, List<PromotionRule> promotions) {
         Objects.requireNonNull(cart, "cart");
         Objects.requireNonNull(promotions, "promotions");
+        // Checked up front so a rule without a type fails clearly, whichever gate it would reach.
+        for (PromotionRule rule : promotions) {
+            Objects.requireNonNull(rule, "promotion rule must not be null");
+            Objects.requireNonNull(rule.type(), () -> "promotion rule " + rule.id() + " has no type");
+        }
 
         CartState state = new CartState(cart);
         Set<String> claimedGroups = new HashSet<>();
@@ -93,11 +117,8 @@ public class DefaultPromotionEngine implements PromotionEngine {
             return skipped(rule, "exclusive group " + group + " already claimed by an earlier rule");
         }
 
-        // Temporary until every rule type has a handler.
+        // The constructor guarantees a handler for every rule type.
         RuleHandler handler = handlers.get(rule.type());
-        if (handler == null) {
-            return skipped(rule, "rule type " + rule.type() + " is not supported yet");
-        }
 
         // Gate 4: type-specific configuration.
         Optional<String> invalid = handler.validate(rule);

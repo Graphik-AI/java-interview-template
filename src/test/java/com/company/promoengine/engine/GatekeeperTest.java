@@ -7,11 +7,13 @@ import static com.company.promoengine.engine.EngineTestSupport.bundleRule;
 import static com.company.promoengine.engine.EngineTestSupport.cart;
 import static com.company.promoengine.engine.EngineTestSupport.categoryRule;
 import static com.company.promoengine.engine.EngineTestSupport.component;
+import static com.company.promoengine.engine.EngineTestSupport.couponRule;
 import static com.company.promoengine.engine.EngineTestSupport.evaluate;
 import static com.company.promoengine.engine.EngineTestSupport.item;
 import static com.company.promoengine.engine.EngineTestSupport.money;
 import static com.company.promoengine.engine.EngineTestSupport.rule;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.company.promoengine.domain.AuditEntry;
 import com.company.promoengine.domain.Cart;
@@ -265,8 +267,7 @@ class GatekeeperTest {
                             .window(WINDOW_END, WINDOW_START)),
                     Arguments.of("invalid configuration", categoryRule("BLOCKER", "BOOKS", "0")),
                     Arguments.of("no matching category", categoryRule("BLOCKER", "ELECTRONICS", "50")),
-                    Arguments.of("zero discount", categoryRule("BLOCKER", "CHEAP", "10")),
-                    Arguments.of("unsupported type", rule("BLOCKER", RuleType.COUPON_PAYMENT_OFF)));
+                    Arguments.of("zero discount", categoryRule("BLOCKER", "CHEAP", "10")));
         }
 
         @ParameterizedTest(name = "{0}")
@@ -294,17 +295,43 @@ class GatekeeperTest {
     }
 
     @Nested
-    class UnsupportedTypes {
+    class HandlerRegistry {
 
         @ParameterizedTest
-        @EnumSource(value = RuleType.class, mode = EnumSource.Mode.EXCLUDE,
-                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE", "BUNDLE_FIXED_PRICE", "TIERED_SPEND",
-                        "CART_PERCENTAGE_OFF"})
-        void ruleTypeWithoutHandlerIsSkipped(RuleType type) {
+        @EnumSource(RuleType.class)
+        void everyRuleTypeHasAHandler(RuleType type) {
+            // An unconfigured rule reaches its handler's validation (gate 4) for every type.
             var result = evaluate(BOOKS_100, rule("PROMO_X", type).build());
 
             assertAudit(result, 0, "PROMO_X", RuleStatus.SKIPPED, "0.00");
-            assertThat(result.auditTrail().get(0).reason()).isEqualTo("Skipped: rule type " + type + " is not supported yet");
+            assertThat(result.auditTrail().get(0).reason()).startsWith("Skipped: invalid configuration: ");
+        }
+
+        @Test
+        void missingHandlerFailsFast() {
+            assertThatThrownBy(() -> new DefaultPromotionEngine(List.of(new CategoryPercentageHandler())))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageStartingWith("No handler registered for ")
+                    .hasMessageContaining("COUPON_PAYMENT_OFF")
+                    .hasMessageNotContaining("PERCENTAGE_OFF_CATEGORY");
+        }
+
+        @Test
+        void duplicateHandlerFailsFast() {
+            assertThatThrownBy(() -> new DefaultPromotionEngine(List.of(
+                    new CategoryPercentageHandler(), new CategoryPercentageHandler())))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("Duplicate handler for PERCENTAGE_OFF_CATEGORY");
+        }
+
+        @Test
+        void ruleWithoutTypeIsRejectedClearly() {
+            // Rejected up front, even though this rule would otherwise be skipped by the window gate.
+            PromotionRule untyped = rule("PROMO_NO_TYPE", null).window(WINDOW_START, NOW.minusSeconds(1)).build();
+
+            assertThatThrownBy(() -> new DefaultPromotionEngine().evaluate(BOOKS_100, List.of(untyped)))
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessage("promotion rule PROMO_NO_TYPE has no type");
         }
     }
 
@@ -322,7 +349,7 @@ class GatekeeperTest {
                     categoryRule("INVALID", "BOOKS", "150").build(),
                     categoryRule("NO_MATCH", "ELECTRONICS", "50").build(),
                     categoryRule("ZERO", "CHEAP", "10").build(),
-                    rule("UNSUPPORTED", RuleType.COUPON_PAYMENT_OFF).build());
+                    couponRule("NO_COUPON", "SAVE10").percentage("10").build());
 
             assertThat(result.itemizedBreakdown()).isEqualTo(baseline.itemizedBreakdown());
             assertThat(result.totalDiscount()).isEqualTo(money("0.00"));
