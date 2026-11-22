@@ -278,7 +278,8 @@ class GatekeeperTest {
     class UnsupportedTypes {
 
         @ParameterizedTest
-        @EnumSource(value = RuleType.class, names = "PERCENTAGE_OFF_CATEGORY", mode = EnumSource.Mode.EXCLUDE)
+        @EnumSource(value = RuleType.class, mode = EnumSource.Mode.EXCLUDE,
+                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE"})
         void ruleTypeWithoutHandlerIsSkipped(RuleType type) {
             var result = evaluate(BOOKS_100, rule("PROMO_X", type).build());
 

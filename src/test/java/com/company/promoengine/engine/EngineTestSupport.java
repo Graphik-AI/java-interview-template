@@ -61,6 +61,10 @@ final class EngineTestSupport {
         return rule(id, RuleType.PERCENTAGE_OFF_CATEGORY).category(category).percentage(percentage);
     }
 
+    static RuleBuilder buyXGetCheapestFreeRule(String id, Integer buy, Integer free, String... skus) {
+        return rule(id, RuleType.BUY_X_GET_CHEAPEST_FREE).buyQuantity(buy).freeQuantity(free).skus(skus);
+    }
+
     /** Defaults: name = id, priority 1, no group, window covering {@link #NOW}. */
     static final class RuleBuilder {
         private final String id;
@@ -72,8 +76,11 @@ final class EngineTestSupport {
         private Instant validFrom = WINDOW_START;
         private Instant validTo = WINDOW_END;
         private String category;
+        private List<String> skus;
         private BigDecimal percentage;
         private BigDecimal maxDiscountAmount;
+        private Integer buyQuantity;
+        private Integer freeQuantity;
         private boolean withoutConditions;
         private boolean withoutDiscountConfig;
 
@@ -108,6 +115,22 @@ final class EngineTestSupport {
             return this;
         }
 
+        /** {@code null} means "no skus"; note RuleConditions rejects null entries. */
+        RuleBuilder skus(String... values) {
+            this.skus = values == null ? null : List.of(values);
+            return this;
+        }
+
+        RuleBuilder buyQuantity(Integer value) {
+            this.buyQuantity = value;
+            return this;
+        }
+
+        RuleBuilder freeQuantity(Integer value) {
+            this.freeQuantity = value;
+            return this;
+        }
+
         RuleBuilder percentage(String value) {
             this.percentage = value == null ? null : new BigDecimal(value);
             return this;
@@ -131,10 +154,10 @@ final class EngineTestSupport {
         PromotionRule build() {
             RuleConditions conditions = withoutConditions
                     ? null
-                    : new RuleConditions(category, null, null, null, null);
+                    : new RuleConditions(category, skus, null, null, null);
             DiscountConfig discountConfig = withoutDiscountConfig
                     ? null
-                    : new DiscountConfig(percentage, null, null, null, maxDiscountAmount, null, null);
+                    : new DiscountConfig(percentage, null, buyQuantity, freeQuantity, maxDiscountAmount, null, null);
             return new PromotionRule(id, name == null ? id : name, type, priority, exclusiveGroup,
                     stackableWithItemPromos, validFrom, validTo, conditions, discountConfig);
         }
