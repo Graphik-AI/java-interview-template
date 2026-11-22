@@ -43,6 +43,7 @@ public class DefaultPromotionEngine implements PromotionEngine {
         register(new CategoryPercentageHandler());
         register(new BuyXGetCheapestFreeHandler());
         register(new BundleFixedPriceHandler());
+        register(new TieredSpendHandler());
     }
 
     private void register(RuleHandler handler) {

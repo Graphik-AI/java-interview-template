@@ -266,7 +266,7 @@ class GatekeeperTest {
                     Arguments.of("invalid configuration", categoryRule("BLOCKER", "BOOKS", "0")),
                     Arguments.of("no matching category", categoryRule("BLOCKER", "ELECTRONICS", "50")),
                     Arguments.of("zero discount", categoryRule("BLOCKER", "CHEAP", "10")),
-                    Arguments.of("unsupported type", rule("BLOCKER", RuleType.TIERED_SPEND)));
+                    Arguments.of("unsupported type", rule("BLOCKER", RuleType.CART_PERCENTAGE_OFF)));
         }
 
         @ParameterizedTest(name = "{0}")
@@ -298,7 +298,7 @@ class GatekeeperTest {
 
         @ParameterizedTest
         @EnumSource(value = RuleType.class, mode = EnumSource.Mode.EXCLUDE,
-                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE", "BUNDLE_FIXED_PRICE"})
+                names = {"PERCENTAGE_OFF_CATEGORY", "BUY_X_GET_CHEAPEST_FREE", "BUNDLE_FIXED_PRICE", "TIERED_SPEND"})
         void ruleTypeWithoutHandlerIsSkipped(RuleType type) {
             var result = evaluate(BOOKS_100, rule("PROMO_X", type).build());
 

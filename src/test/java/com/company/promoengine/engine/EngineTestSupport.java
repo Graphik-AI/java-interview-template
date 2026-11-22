@@ -14,6 +14,7 @@ import com.company.promoengine.domain.PromotionRule;
 import com.company.promoengine.domain.RuleConditions;
 import com.company.promoengine.domain.RuleStatus;
 import com.company.promoengine.domain.RuleType;
+import com.company.promoengine.domain.SpendTier;
 import com.company.promoengine.domain.UserTier;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -74,6 +75,26 @@ final class EngineTestSupport {
         return new BundleComponent(sku, quantity);
     }
 
+    static RuleBuilder tieredRule(String id, SpendTier... tiers) {
+        return rule(id, RuleType.TIERED_SPEND).tiers(tiers);
+    }
+
+    static SpendTier amountTier(String minSubtotal, String amount) {
+        return tier(minSubtotal, null, amount);
+    }
+
+    static SpendTier percentTier(String minSubtotal, String percentage) {
+        return tier(minSubtotal, percentage, null);
+    }
+
+    /** Any combination, including invalid ones; {@code null} leaves a field unset. */
+    static SpendTier tier(String minSubtotal, String percentage, String amount) {
+        return new SpendTier(
+                minSubtotal == null ? null : new BigDecimal(minSubtotal),
+                percentage == null ? null : new BigDecimal(percentage),
+                amount == null ? null : new BigDecimal(amount));
+    }
+
     /** Defaults: name = id, priority 1, no group, window covering {@link #NOW}. */
     static final class RuleBuilder {
         private final String id;
@@ -92,6 +113,7 @@ final class EngineTestSupport {
         private Integer freeQuantity;
         private List<BundleComponent> components;
         private BigDecimal bundlePrice;
+        private List<SpendTier> tiers;
         private boolean withoutConditions;
         private boolean withoutDiscountConfig;
 
@@ -148,6 +170,17 @@ final class EngineTestSupport {
             return this;
         }
 
+        /** {@code null} means "no tiers". */
+        RuleBuilder tiers(SpendTier... values) {
+            this.tiers = values == null ? null : List.of(values);
+            return this;
+        }
+
+        RuleBuilder stackable(Boolean value) {
+            this.stackableWithItemPromos = value;
+            return this;
+        }
+
         RuleBuilder bundlePrice(String value) {
             this.bundlePrice = value == null ? null : new BigDecimal(value);
             return this;
@@ -180,7 +213,7 @@ final class EngineTestSupport {
             DiscountConfig discountConfig = withoutDiscountConfig
                     ? null
                     : new DiscountConfig(percentage, null, buyQuantity, freeQuantity, maxDiscountAmount,
-                            bundlePrice, null);
+                            bundlePrice, tiers);
             return new PromotionRule(id, name == null ? id : name, type, priority, exclusiveGroup,
                     stackableWithItemPromos, validFrom, validTo, conditions, discountConfig);
         }
